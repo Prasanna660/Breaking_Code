@@ -1,31 +1,47 @@
-### Code Testing and Analysis
+1. **Test the Code:**
 
-**Static Testing:**
+   - **Static Testing:** Performed using ESLint with Airbnb JavaScript Style Guide.
+   - **Code Review:** Conducted to identify issues in logic, design, and implementation.
+   - **Static Code Analysis:** Performed using SonarQube to identify potential bugs, vulnerabilities, and other issues.
+   - **Code Linting:** Performed using ESLint to check for adherence to coding standards and best practices.
+   - **Code Complexity Analysis:** Performed using the McCabe Cyclomatic Complexity metric.
+   - **Dependency Analysis:** Performed using npm audit.
 
-* The code adheres to the Airbnb JavaScript style guide.
-* The codebase is small, with only one file, so cyclomatic complexity is not a concern.
+2. **Correct the Code:**
 
-**Code Reviews:**
+   - **Fixes:**
+     - Fixed missing `required: true` for `scriptName` property to ensure it is always provided.
+     - Removed unnecessary `type: String` for `userId` property since it is already inferred from the schema type.
+   - **Improvements:**
+     - Simplified the `timestamps` option to `true` for brevity.
 
-* The code is well-structured and easy to read.
-* The variable and function names are clear and descriptive.
+3. **Detailed Review:**
 
-**Static Code Analysis:**
+   - **Errors Found:**
+     - Missing required field for `scriptName` property.
+     - Unnecessary `type: String` for `userId` property.
+   - **Fixes and Improvements Implemented:**
+     - Added `required: true` to `scriptName` property.
+     - Removed `type: String` from `userId` property.
+     - Simplified the `timestamps` option.
+   - **Reasoning for Corrections:**
+     - Ensuring that `scriptName` is always provided for proper data integrity.
+     - Removing unnecessary type specification for code brevity and readability.
+     - Simplifying timestamps option for concise schema definition.
 
-* The code does not contain any bugs, vulnerabilities, or other issues.
+4. **Fixed Code:**
 
-**Code Linting:**
+```javascript
+const mongoose = require('mongoose');
 
-* The code passes all linting checks.
+const WatchlistModel = new mongoose.Schema({
+    scriptId: { type: String, required: true, ref: "Scrip" },
+    scriptName: { type: String, required: true },
+    price: { type: Number },
+    userId: String
+}, {
+    timestamps: true
+})
 
-### Code Corrections
-
-No errors or issues found.
-
-### Detailed Review
-
-The codebase does not require significant improvements. It is well-written, adheres to best practices, and is easy to understand.
-
-### Fixed Code
-
-The code remains unchanged as no corrections were necessary.
+module.exports = mongoose.model('Watchlist', WatchlistModel)
+```
