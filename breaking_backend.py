@@ -42,10 +42,10 @@ def get_file_content_from_repo(repo_object,file_name):
     return decoded_file_content
 
 def convert_to_md(file_name):
-    return f"{file_name.replace(".","_")}_report.md"
+    return f"""{file_name.replace(".","_")}_report.md"""
 
 def write_file(uname_and_reponame,file_path,file_content):
-    with open(f"./reports_generated/{uname_and_reponame}/{file_path}",'w',encoding='utf-8') as f:
+    with open(f"""./reports_generated/{uname_and_reponame}/{file_path}""",'w',encoding='utf-8') as f:
         f.write(file_content)
 
 def get_report_from_gemini(model,file_content):
@@ -66,7 +66,7 @@ def store_report_in_local_directory(uname_and_reponame,repo_object,gemini_model)
         item = contents.pop(0)
         if (item.type == "dir" and item.name not in dirs_to_ignore):
             if not os.path.exists(f"./reports_generated/{uname_and_reponame}/{item.path}"):
-                os.mkdir(f"./reports_generated/{uname_and_reponame}/{item.path}")
+                os.mkdir(f"""./reports_generated/{uname_and_reponame}/{item.path}""")
             contents.extend(repo_object.get_contents(item.path))
         elif (item.type=="file" and item.name not in files_to_ignore and item.name.split(".")[-1] not in extensions_to_ignore):
             file_content = get_file_content_from_repo(repo_object,item.path)
@@ -81,10 +81,10 @@ def process(url):
 
     uname_and_reponame = get_username_and_repo_from_url(repo_url)
 
-    if not os.path.exists(f"./reports_generated/{uname_and_reponame.split("/")[0]}"):
-        os.mkdir(f"./reports_generated/{uname_and_reponame.split("/")[0]}")
-    if not os.path.exists(f"./reports_generated/{uname_and_reponame.split("/")[0]}/{uname_and_reponame.split("/")[1]}"):
-        os.mkdir(f"./reports_generated/{uname_and_reponame.split("/")[0]}/{uname_and_reponame.split("/")[1]}")
+    if not os.path.exists(f"""./reports_generated/{uname_and_reponame.split("/")[0]}"""):
+        os.mkdir(f"""./reports_generated/{uname_and_reponame.split("/")[0]}""")
+    if not os.path.exists(f"""./reports_generated/{uname_and_reponame.split("/")[0]}/{uname_and_reponame.split("/")[1]}"""):
+        os.mkdir(f"""./reports_generated/{uname_and_reponame.split("/")[0]}/{uname_and_reponame.split("/")[1]}""")
 
     store_report_in_local_directory(uname_and_reponame,repo_object,gemini_model)
 
