@@ -2,25 +2,30 @@
 
 # Module Imports
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 import base64
+import streamlit as st
 from github import Github,Auth
 import google.generativeai as genai
 
-load_dotenv()
+#load_dotenv()
 
 def create_get_gemini_model():
-    genai.configure(api_key=os.getenv('GOOGLE_GEMINI_API_KEY'))
+    genai.configure(api_key=st.secrets['google_gemini_api_key'])
     model = genai.GenerativeModel('gemini-pro')
     return model
 
 def create_get_github_object():
-    g=Github(auth=Auth.Token(os.getenv('GITHUB_ACCESS_TOKEN')))
+    g = Github(auth=Auth.Token(st.secrets['github_access_token']))
     return g
 
 def get_username_and_repo_from_url(url):
-    starting='https://github.com/'
-    return url[len(starting):]
+    starting = 'https://github.com/'
+    try:
+        if url.startswith(starting):
+            return url[len(starting):].strip("/")
+    except:
+        pass
 
 def create_get_repository_object(github_object,repo_url):
     uname_and_reponame = get_username_and_repo_from_url(repo_url)
@@ -65,7 +70,7 @@ def store_report_in_local_directory(uname_and_reponame,repo_object,gemini_model)
     while contents:
         item = contents.pop(0)
         if (item.type == "dir" and item.name not in dirs_to_ignore):
-            if not os.path.exists(f"./reports_generated/{uname_and_reponame}/{item.path}"):
+            if not os.path.exists(f"""./reports_generated/{uname_and_reponame}/{item.path}"""):
                 os.mkdir(f"""./reports_generated/{uname_and_reponame}/{item.path}""")
             contents.extend(repo_object.get_contents(item.path))
         elif (item.type=="file" and item.name not in files_to_ignore and item.name.split(".")[-1] not in extensions_to_ignore):
@@ -91,5 +96,5 @@ def process(url):
     print("Report Generated Successfully")
 
 if __name__=="__main__":
-    url = "https://github.com/Maran1947/Stockify/"
+    url = "https://github.com/GitKishorDesai/Breaking_Code"
     process(url)
