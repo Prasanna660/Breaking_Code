@@ -4,7 +4,6 @@
 import os
 #from dotenv import load_dotenv
 import base64
-import streamlit as st
 from github import Github,Auth
 import google.generativeai as genai
 
@@ -20,8 +19,12 @@ def create_get_github_object():
     return g
 
 def get_username_and_repo_from_url(url):
-    starting='https://github.com/'
-    return url[len(starting):]
+    starting = 'https://github.com/'
+    try:
+        if url.startswith(starting):
+            return url[len(starting):].strip("/")
+    except:
+        pass
 
 def create_get_repository_object(github_object,repo_url):
     uname_and_reponame = get_username_and_repo_from_url(repo_url)
@@ -66,7 +69,7 @@ def store_report_in_local_directory(uname_and_reponame,repo_object,gemini_model)
     while contents:
         item = contents.pop(0)
         if (item.type == "dir" and item.name not in dirs_to_ignore):
-            if not os.path.exists(f"./reports_generated/{uname_and_reponame}/{item.path}"):
+            if not os.path.exists(f"""./reports_generated/{uname_and_reponame}/{item.path}"""):
                 os.mkdir(f"""./reports_generated/{uname_and_reponame}/{item.path}""")
             contents.extend(repo_object.get_contents(item.path))
         elif (item.type=="file" and item.name not in files_to_ignore and item.name.split(".")[-1] not in extensions_to_ignore):
