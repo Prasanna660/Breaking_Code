@@ -4,13 +4,14 @@ import streamlit as st
 
 # Streamlit UI components
 
-st.sidebar.title("GitHub Repository Analyzer")
+st.sidebar.title("Test you code directly from Github")
 url = st.sidebar.text_input("Enter the GitHub repository URL:", None)
 
 uname_and_reponame = backend.get_username_and_repo_from_url(url)
 
 st.markdown("""
-### Instructions
+### BREAKING CODE
+#Instructions
 1. Enter the GitHub repository URL in the input box.
 2. Click the 'Generate Report' button to process the repository and generate reports.
 3. Select a report from the dropdown to view its contents.
@@ -40,13 +41,15 @@ def get_all_files(root,files=None):
         else:
             files.append(f"{root}/{item}")
     return [("/").join(file.split("/")[4:]) for file in files]
-
-reports_list = get_all_files(reports_dir)
-report_file = st.sidebar.selectbox("Select a report to view:", reports_list)
+try:
+    reports_list = get_all_files(reports_dir)
+    report_file = st.sidebar.selectbox("Select a view a report:", reports_list)
+    if report_file:
+        with open(f"{reports_dir}/{report_file}", 'r', encoding='utf-8') as f:
+            report_content = f.read()
+            st.markdown(report_content, unsafe_allow_html=True)
+except:
+    pass
 
 # Displaying the selected Markdown report
-if report_file:
-    with open(f"{reports_dir}/{report_file}", 'r', encoding='utf-8') as f:
-        report_content = f.read()
-        st.markdown(report_content, unsafe_allow_html=True)
 
