@@ -2,20 +2,21 @@
 
 # Module Imports
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 import base64
+import streamlit as st
 from github import Github,Auth
 import google.generativeai as genai
 
-load_dotenv()
+#load_dotenv()
 
 def create_get_gemini_model():
-    genai.configure(api_key=os.getenv('GOOGLE_GEMINI_API_KEY'))
+    genai.configure(api_key=st.secrets['google_gemini_api_key'])
     model = genai.GenerativeModel('gemini-pro')
     return model
 
 def create_get_github_object():
-    g=Github(auth=Auth.Token(os.getenv('GITHUB_ACCESS_TOKEN')))
+    g = Github(auth=Auth.Token(st.secrets['github_access_token']))
     return g
 
 def get_username_and_repo_from_url(url):
@@ -91,5 +92,5 @@ def process(url):
     print("Report Generated Successfully")
 
 if __name__=="__main__":
-    url = "https://github.com/Maran1947/Stockify/"
+    url = "https://github.com/GitKishorDesai/Breaking_Code"
     process(url)
